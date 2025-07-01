@@ -26,3 +26,4 @@ dist/
 # Ignorar uploads de arquivos ou resultados temporários (se seu app criasse algum)
 uploads/
 results/
+.vercel
