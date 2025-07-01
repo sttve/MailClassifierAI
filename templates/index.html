@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificador de E-mails com IA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+            min-height: 150px;
+        }
+        input[type="file"] {
+            display: block;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            display: none; /* Escondido inicialmente */
+        }
+        .results p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .results strong {
+            color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Classificador e Sugestor de Respostas de E-mails</h1>
+        <p>Utilize esta ferramenta para classificar seus e-mails como 'Produtivo' ou 'Improdutivo' e receba sugestões de respostas automáticas.</p>
+
+        <form id="emailForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email_text">Cole o conteúdo do e-mail aqui:</label>
+                <textarea id="email_text" name="email_text" placeholder="Cole o texto do seu e-mail aqui..."></textarea>
+            </div>
+
+            <p style="text-align: center; margin: 15px 0;">OU</p>
+
+            <div class="form-group">
+                <label for="file">Faça upload de um arquivo (.txt ou .pdf):</label>
+                <input type="file" id="file" name="file" accept=".txt, .pdf">
+            </div>
+
+            <button type="submit">Classificar e Sugerir Resposta</button>
+        </form>
+
+        <div class="spinner" id="loadingSpinner"></div>
+        <p class="error-message" id="errorMessage"></p>
+
+        <div class="results" id="resultsArea">
+            <h2>Resultados</h2>
+            <p><strong>Categoria:</strong> <span id="categoryResult"></span></p>
+            <p><strong>Resposta Sugerida:</strong></p>
+            <p id="suggestedResponseResult"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const emailText = document.getElementById('email_text').value;
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+
+            const resultsArea = document.getElementById('resultsArea');
+            const categoryResult = document.getElementById('categoryResult');
+            const suggestedResponseResult = document.getElementById('suggestedResponseResult');
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Resetar resultados e mensagens de erro
+            resultsArea.style.display = 'none';
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+            loadingSpinner.style.display = 'block'; // Mostrar spinner
+
+            const formData = new FormData();
+            if (file) {
+                formData.append('file', file);
+            } else if (emailText.trim()) {
+                formData.append('email_text', emailText);
+            } else {
+                errorMessage.textContent = 'Por favor, insira o texto do e-mail ou faça upload de um arquivo.';
+                errorMessage.style.display = 'block';
+                loadingSpinner.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/process_email', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    categoryResult.textContent = data.category;
+                    suggestedResponseResult.textContent = data.suggested_response;
+                    resultsArea.style.display = 'block';
+                } else {
+                    errorMessage.textContent = data.error || 'Ocorreu um erro desconhecido.';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Erro de conexão: ' + error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingSpinner.style.display = 'none'; // Esconder spinner
+            }
+        });
+    </script>
+</body>
+</html>

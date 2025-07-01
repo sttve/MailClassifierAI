@@ -1,0 +1,28 @@
+# Ignorar arquivos e pastas gerados pelo Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+.venv/
+build/
+dist/
+*.egg-info/
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Ignorar arquivos de ambiente (onde sua chave da OpenAI estaria)
+.env
+
+# Ignorar arquivos de IDEs
+.idea/  # Para PyCharm
+*.iml
+
+# Ignorar uploads de arquivos ou resultados temporários (se seu app criasse algum)
+uploads/
+results/

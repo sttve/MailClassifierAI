@@ -1,0 +1,5 @@
+Flask
+transformers
+Pillow  # Necessário para PyPDF2 em algumas instalações (dependência indireta)
+PyPDF2
+openai
