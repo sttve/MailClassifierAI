@@ -10,16 +10,16 @@ from openai import OpenAI
 
 # --- Configuração do Flask ---
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY',
-                                          'sua_chave_secreta_padrao_muito_segura')  # Gerar uma chave forte em produção!
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # <--- Mudança para BANCO DE DADOS em Memória!
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'sua_chave_secreta_padrao_muito_segura')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # Mantenha o DB em memória
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
 
-login_manager.login_view = 'login'  # Define a rota para onde redirecionar se o usuário não estiver logado
-login_manager.login_message_category = 'info'  # Categoria para mensagens flash de login
+
 
 # --- Configuração OpenAI (já existente) ---
 openai_api_key = os.environ.get("OPENAI_API_KEY")
@@ -41,6 +41,16 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f"User('{self.username}')"
 
+with app.app_context():
+    db.create_all() # <-- Isso garante que as tabelas sejam criadas na inicialização da função serverless
+    # Opcional: Criar um usuário admin na inicialização do DB em memória (para testes)
+    # Note: Este usuário será recriado a cada nova instância da função na Vercel
+    if not User.query.filter_by(username='admin').first(): # Sempre true em uma nova instância
+        admin_user = User(username='admin')
+        admin_user.set_password('admin123') # Defina uma senha forte para produção!
+        db.session.add(admin_user)
+        db.session.commit()
+        print("Usuário 'admin' criado na memória para testes.") # Isso aparecerá nos logs da Vercel
 
 # --- Callback para Flask-Login ---
 @login_manager.user_loader
@@ -225,13 +235,7 @@ def logout():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        # Opcional: Adicionar um usuário admin inicial
-        if not User.query.filter_by(username='admin').first(): # Esta linha SEMPRE será True em memória
-            admin_user = User(username='admin')
-            admin_user.set_password('admin123')
-            db.session.add(admin_user)
-            db.session.commit()
-            print("Usuário 'admin' criado.")
+    # O db.create_all() já foi chamado acima. Pode deixar aqui para garantir, mas não é estritamente necessário.
+    # Se quiser testar o admin em memória localmente, pode deixar este bloco.
+    print("Iniciando aplicação Flask localmente.")
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 8080))
