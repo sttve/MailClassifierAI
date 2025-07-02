@@ -1,9 +1,3 @@
------
-
-Ótimo\! Vamos atualizar o `README.md` para refletir as mudanças para o deploy na Vercel e dar mais destaque à integração com a OpenAI, além de incluir o `gunicorn` nas dependências.
-
------
-
 # 📧 Classificador de E-mails com IA e Sugestão de Respostas
 
 Este projeto é uma aplicação web simples desenvolvida em **Python (Flask)** que utiliza **Inteligência Artificial** para classificar e-mails em categorias "Produtivo" ou "Improdutivo" e, em seguida, sugerir respostas automáticas personalizadas. A inteligência de geração de respostas é **powered by OpenAI GPT-3.5 Turbo**.
