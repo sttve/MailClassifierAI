@@ -72,7 +72,7 @@ Para configurar e executar o projeto em seu ambiente local, siga as instruções
     python api/index.py
     ```
 
-    A aplicação estará acessível via `http://127.0.0.1:5000/`. A página de login será o ponto de entrada inicial.
+    A aplicação estará acessível via `http://127.0.0.1:8080/`. A página de login será o ponto de entrada inicial.
 
 -----
 
