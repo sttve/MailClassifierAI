@@ -1,0 +1,23 @@
+No terminal, na raiz do seu projeto, execute:
+
+Bash
+
+docker build -t email-classifier-ai .
+docker build: Comando para construir uma imagem Docker.
+
+-t email-classifier-ai: Atribui um nome (tag) à sua imagem (ex: email-classifier-ai).
+
+.: Indica que o Dockerfile está no diretório atual.
+
+Executar o Contêiner Docker:
+Depois que a imagem for construída, você pode iniciar um contêiner a partir dela.
+
+Bash
+
+docker run -p 5000:8000 -e OPENAI_API_KEY="sua_chave_secreta_aqui" email-classifier-ai
+
+docker run: Comando para executar um contêiner.
+
+-p 5000:8000: Mapeia a porta 8000 do contêiner (onde o Gunicorn está ouvindo) para a porta 5000 na sua máquina local. Assim, você acessa a aplicação via http://localhost:5000.
+
+-e OPENAI_API_KEY="sua_chave_secreta_aqui": Passa sua chave da OpenAI como uma variável de ambiente para o contêiner. Importante: não use sua chave real diretamente no comando em scripts públicos. Para desenvolvimento, você pode usar assim ou um arquivo .env fora do Docker. Em produção, a plataforma de deploy cuidaria disso.

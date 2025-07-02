@@ -1,0 +1,24 @@
+# Ignorar pastas de ambiente virtual
+venv/
+.venv/
+
+# Ignorar arquivos de cache e metadados
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Ignorar o arquivo .env (contém segredos)
+.env
+
+# Ignorar a pasta .git
+.git/
+
+# Ignorar arquivos específicos da IDE (PyCharm)
+.idea/
+*.iml
+
+# Ignorar node_modules e outros caches se você tiver um frontend mais complexo
+node_modules/
+npm-debug.log
