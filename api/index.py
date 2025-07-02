@@ -224,19 +224,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-# --- Função para criar o banco de dados (chamar uma vez) ---
-# Você pode rodar isso em um script separado ou adicionar uma rota de admin temporária
-# Exemplo de como criar/inicializar o DB (roda uma vez na inicialização ou via shell):
-# with app.app_context():
-#     db.create_all()
-#     # Opcional: Adicionar um usuário admin inicial
-#     if not User.query.filter_by(username='admin').first():
-#         admin_user = User(username='admin')
-#         admin_user.set_password('admin123') # Troque para uma senha forte!
-#         db.session.add(admin_user)
-#         db.session.commit()
-#         print("Usuário 'admin' criado.")
-
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
