@@ -11,11 +11,10 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    </body>
-</html>
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand p-4" href="#">
+            <a class="navbar-brand" href="#">
                 <i class="fas fa-robot me-2"></i> Classificador de E-mails com IA
             </a>
         </div>
@@ -67,6 +66,32 @@
                     </div>
                 </div>
             </div>
+
+            <div class="history-section mt-5" id="historySection">
+                <h2 class="text-primary mb-3 text-center">Histórico de Análises</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Data/Hora</th>
+                                <th scope="col">Conteúdo</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted" id="noHistoryMessage">Nenhum registro no histórico ainda.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-danger btn-sm" id="clearHistoryButton" style="display: none;">
+                        <i class="fas fa-trash-alt me-2"></i> Limpar Histórico
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -79,70 +104,195 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
-        document.getElementById('emailForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Impede o envio padrão do formulário
-
-            const emailText = document.getElementById('email_text').value;
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const emailForm = document.getElementById('emailForm');
+            const emailTextarea = document.getElementById('email_text');
             const fileInput = document.getElementById('file');
-            const file = fileInput.files[0];
-
             const resultsArea = document.getElementById('resultsArea');
             const categoryResult = document.getElementById('categoryResult');
             const suggestedResponseResult = document.getElementById('suggestedResponseResult');
             const errorMessage = document.getElementById('errorMessage');
             const loadingSpinner = document.getElementById('loadingSpinner');
 
-            // Resetar resultados e mensagens de erro
-            resultsArea.style.display = 'none';
-            errorMessage.style.display = 'none';
-            errorMessage.textContent = '';
-            loadingSpinner.style.display = 'block'; // Mostrar spinner
-            categoryResult.className = 'badge bg-secondary'; // Resetar a classe do badge
+            const historyTableBody = document.getElementById('historyTableBody');
+            const noHistoryMessage = document.getElementById('noHistoryMessage');
+            const clearHistoryButton = document.getElementById('clearHistoryButton');
 
-            const formData = new FormData();
-            if (file) {
-                formData.append('file', file);
-            } else if (emailText.trim()) {
-                formData.append('email_text', emailText);
-            } else {
-                errorMessage.textContent = 'Por favor, insira o texto do e-mail ou faça upload de um arquivo.';
-                errorMessage.style.display = 'block';
-                loadingSpinner.style.display = 'none';
-                return;
-            }
+            const MAX_HISTORY_ITEMS = 10; // Limite de itens no histórico
+            const HISTORY_STORAGE_KEY = 'emailClassifierHistory'; // Chave para o LocalStorage
 
-            try {
-                const response = await fetch('/process_email', {
-                    method: 'POST',
-                    body: formData
-                });
+            // Função para carregar o histórico do LocalStorage
+            function loadHistory() {
+                const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+                historyTableBody.innerHTML = ''; // Limpa o corpo da tabela
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    categoryResult.textContent = data.category;
-                    suggestedResponseResult.textContent = data.suggested_response;
-                    resultsArea.style.display = 'block';
-
-                    // Atualizar cor do badge baseado na categoria
-                    if (data.category === "Produtivo") {
-                        categoryResult.classList.remove('bg-secondary');
-                        categoryResult.classList.add('bg-success'); // Ou outra cor de sua preferência
-                    } else if (data.category === "Improdutivo") {
-                        categoryResult.classList.remove('bg-secondary');
-                        categoryResult.classList.add('bg-warning', 'text-dark'); // Para texto escuro em fundo claro
-                    }
-
+                if (history.length === 0) {
+                    noHistoryMessage.style.display = 'table-row';
+                    clearHistoryButton.style.display = 'none';
                 } else {
-                    errorMessage.textContent = data.error || 'Ocorreu um erro desconhecido.';
-                    errorMessage.style.display = 'block';
+                    noHistoryMessage.style.display = 'none';
+                    clearHistoryButton.style.display = 'block';
+                    // Renderiza os itens do histórico
+                    history.forEach(item => {
+                        const row = historyTableBody.insertRow(-1); // Adiciona no final para manter a ordem
+                        row.setAttribute('data-item-id', item.id); // Adiciona ID para facilitar a remoção
+
+                        const dateTimeCell = row.insertCell(0);
+                        const contentCell = row.insertCell(1);
+                        const categoryCell = row.insertCell(2);
+                        const actionsCell = row.insertCell(3);
+
+                        dateTimeCell.textContent = new Date(item.timestamp).toLocaleString();
+                        contentCell.innerHTML = `<span class="truncate-text" title="${item.original_content}">${item.original_content}</span>`;
+                        categoryCell.innerHTML = `<span class="badge ${getCategoryBadgeClass(item.category)}">${item.category}</span>`;
+
+                        actionsCell.innerHTML = `
+                            <button class="btn btn-outline-primary btn-sm me-2 view-history-item" data-item-id="${item.id}" title="Ver Detalhes">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm remove-history-item" data-item-id="${item.id}" title="Remover do Histórico">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                    });
                 }
-            } catch (error) {
-                errorMessage.textContent = 'Erro de conexão: ' + error.message;
-                errorMessage.style.display = 'block';
-            } finally {
-                loadingSpinner.style.display = 'none'; // Esconder spinner
             }
+
+            // Função para obter a classe CSS do badge da categoria
+            function getCategoryBadgeClass(category) {
+                if (category === "Produtivo") {
+                    return 'bg-success';
+                } else if (category === "Improdutivo") {
+                    return 'bg-warning text-dark';
+                }
+                return 'bg-secondary';
+            }
+
+            // Função para salvar um novo item no histórico
+            function saveToHistory(originalContent, category, suggestedResponse) {
+                const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+
+                const newItem = {
+                    id: Date.now(), // ID único baseado no timestamp
+                    timestamp: new Date().toISOString(),
+                    original_content: originalContent,
+                    category: category,
+                    suggested_response: suggestedResponse
+                };
+
+                history.unshift(newItem); // Adiciona o novo item no início do array
+
+                if (history.length > MAX_HISTORY_ITEMS) {
+                    history.pop(); // Remove o item mais antigo
+                }
+
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+                loadHistory(); // Recarrega o histórico na interface
+            }
+
+            // Função para exibir um item do histórico na área de resultados principal
+            function displayResult(item) {
+                categoryResult.textContent = item.category;
+                categoryResult.className = `badge ${getCategoryBadgeClass(item.category)}`;
+                suggestedResponseResult.textContent = item.suggested_response;
+                emailTextarea.value = item.original_content;
+                fileInput.value = ''; // Limpa a seleção de arquivo
+                resultsArea.style.display = 'block';
+            }
+
+            // --- Delegação de Eventos para os Botões de Ação ---
+            historyTableBody.addEventListener('click', (event) => {
+                const target = event.target.closest('button'); // Pega o botão mais próximo que foi clicado
+
+                if (!target) return; // Se não clicou em um botão, sai
+
+                const itemId = parseInt(target.getAttribute('data-item-id')); // Pega o ID do item
+                let history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+                const itemToProcess = history.find(item => item.id === itemId);
+
+                if (!itemToProcess) return; // Item não encontrado
+
+                if (target.classList.contains('view-history-item')) {
+                    // Lógica para o botão "Ver Detalhes"
+                    displayResult(itemToProcess);
+                    resultsArea.scrollIntoView({ behavior: 'smooth' });
+                } else if (target.classList.contains('remove-history-item')) {
+                    // Lógica para o botão "Remover"
+                    if (confirm('Tem certeza que deseja remover este item do histórico?')) {
+                        history = history.filter(item => item.id !== itemId);
+                        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+                        loadHistory(); // Recarrega o histórico após remoção
+                    }
+                }
+            });
+
+
+            // Listener para limpar todo o histórico
+            clearHistoryButton.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                    localStorage.removeItem(HISTORY_STORAGE_KEY);
+                    loadHistory();
+                }
+            });
+
+            // Listener para o formulário de envio
+            emailForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const emailText = emailTextarea.value;
+                const file = fileInput.files[0];
+
+                resultsArea.style.display = 'none';
+                errorMessage.style.display = 'none';
+                errorMessage.textContent = '';
+                loadingSpinner.style.display = 'block';
+                categoryResult.className = 'badge bg-secondary';
+
+                const formData = new FormData();
+                let originalContentToSave = '';
+
+                if (file) {
+                    formData.append('file', file);
+                    originalContentToSave = `[Arquivo: ${file.name}]`;
+                } else if (emailText.trim()) {
+                    formData.append('email_text', emailText);
+                    originalContentToSave = emailText;
+                } else {
+                    errorMessage.textContent = 'Por favor, insira o texto do e-mail ou faça upload de um arquivo.';
+                    errorMessage.style.display = 'block';
+                    loadingSpinner.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/process_email', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        displayResult({
+                            original_content: originalContentToSave,
+                            category: data.category,
+                            suggested_response: data.suggested_response
+                        });
+                        saveToHistory(originalContentToSave, data.category, data.suggested_response);
+                    } else {
+                        errorMessage.textContent = data.error || 'Ocorreu um erro desconhecido.';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    errorMessage.textContent = 'Erro de conexão: ' + error.message;
+                    errorMessage.style.display = 'block';
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                }
+            });
+
+            // Carrega o histórico quando a página é carregada pela primeira vez
+            loadHistory();
         });
     </script>
 </body>
