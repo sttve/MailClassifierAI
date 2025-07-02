@@ -1,17 +1,12 @@
-# tests/test_app.py
-
 import sys
 import os
-
 # Adiciona o diretório pai (raiz do projeto) ao sys.path
 # Isso permite que 'api' seja importado como um pacote
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
 import pytest
-from api.index import app, db, User, login_manager # Importe o que for necessário do seu index.py
+from api.index import app, db, User, login_manager  # Importe o que for necessário do seu index.py
 from werkzeug.security import generate_password_hash
-# ... restante do seu código de teste ...
 from flask.testing import FlaskClient
 
 
@@ -41,7 +36,6 @@ def client():
 
 
 # --- Testes de Autenticação ---
-
 def test_register_new_user(client: FlaskClient):
     """Testa o registro bem-sucedido de um novo usuário."""
     response = client.post('/register', data={
@@ -154,9 +148,6 @@ def test_logout(client: FlaskClient):
     assert response_after_logout.status_code == 302
     assert '/login' in response_after_logout.headers['Location']
 
-
-# --- Você precisaria adicionar testes para /process_email também,
-#     garantindo que ele só funciona quando logado e retorna 401/redireciona quando não.
 
 # Exemplo de como testar /process_email (requer login)
 def test_process_email_requires_login(client: FlaskClient):

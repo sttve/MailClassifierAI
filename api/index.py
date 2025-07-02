@@ -1,11 +1,9 @@
-# api/index.py
-
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 import os
-import PyPDF2  # Certifique-se de que PyPDF2 está importado se ainda usar
+import PyPDF2
 from openai import OpenAI
 
 # --- Configuração do Flask ---
@@ -20,11 +18,9 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
 
-
 # --- Configuração OpenAI (já existente) ---
 openai_api_key = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
-
 
 # --- Modelo de Usuário para o Banco de Dados ---
 class User(UserMixin, db.Model):
@@ -47,7 +43,7 @@ with app.app_context():
     # Note: Este usuário será recriado a cada nova instância da função na Vercel
     if not User.query.filter_by(username='admin').first(): # Sempre true em uma nova instância
         admin_user = User(username='admin')
-        admin_user.set_password('admin123') # Defina uma senha forte para produção!
+        admin_user.set_password('admin123')
         db.session.add(admin_user)
         db.session.commit()
         print("Usuário 'admin' criado na memória para testes.") # Isso aparecerá nos logs da Vercel
@@ -64,7 +60,6 @@ def load_user(user_id):
 
 # --- Funções de Processamento (já existentes) ---
 def extract_text_from_pdf(pdf_file):
-    # ... (seu código existente) ...
     try:
         reader = PyPDF2.PdfReader(pdf_file)
         text = ""
@@ -77,12 +72,10 @@ def extract_text_from_pdf(pdf_file):
 
 
 def preprocess_text(text):
-    # ... (seu código existente) ...
     return text.lower().strip()
 
 
 def classify_email_simulated(email_content):
-    # ... (seu código existente) ...
     # Exemplo simples de classificação por palavras-chave
     email_content_lower = email_content.lower()
 
@@ -108,7 +101,6 @@ def classify_email_simulated(email_content):
 
 
 def generate_openai_response(classification, email_content):
-    # ... (seu código existente) ...
     prompt = f"Você é um assistente de e-mail. Crie uma resposta formal e concisa para um e-mail classificado como '{classification}'. O conteúdo do e-mail original é: '{email_content}'. Se a classificação for 'Produtivo', a resposta deve ser resolutiva ou de encaminhamento. Se for 'Improdutivo', a resposta deve ser de agradecimento ou confirmação."
 
     messages = [
@@ -143,7 +135,6 @@ def index():
 @app.route('/process_email', methods=['POST'])
 @login_required  # Protege esta rota, só usuários logados podem acessá-la
 def process_email():
-    # ... (seu código existente) ...
     email_content = ""
     if 'email_text' in request.form and request.form['email_text'].strip():
         email_content = request.form['email_text'].strip()
