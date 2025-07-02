@@ -12,11 +12,12 @@ from openai import OpenAI
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY',
                                           'sua_chave_secreta_padrao_muito_segura')  # Gerar uma chave forte em produção!
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Nome do arquivo do banco de dados SQLite
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desativa o rastreamento de modificações para otimização
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # <--- Mudança para BANCO DE DADOS em Memória!
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+
 login_manager.login_view = 'login'  # Define a rota para onde redirecionar se o usuário não estiver logado
 login_manager.login_message_category = 'info'  # Categoria para mensagens flash de login
 
@@ -236,10 +237,14 @@ def logout():
 #         db.session.commit()
 #         print("Usuário 'admin' criado.")
 
-
 if __name__ == '__main__':
-    # Para desenvolvimento local, crie o DB se ele não existir
     with app.app_context():
-        db.create_all()  # Cria as tabelas do banco de dados se não existirem
-        print("Banco de dados verificado/criado.")
+        db.create_all()
+        # Opcional: Adicionar um usuário admin inicial
+        if not User.query.filter_by(username='admin').first(): # Esta linha SEMPRE será True em memória
+            admin_user = User(username='admin')
+            admin_user.set_password('admin123')
+            db.session.add(admin_user)
+            db.session.commit()
+            print("Usuário 'admin' criado.")
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 8080))
