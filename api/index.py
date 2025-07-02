@@ -1,46 +1,32 @@
+# api/index.py
 import os
-
-from dotenv import load_dotenv
-load_dotenv()
-
-# Carrega as variáveis do .env
-
-try:
-    openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-except Exception as e:
-    print(f"Erro ao inicializar cliente OpenAI: {e}. Certifique-se de que OPENAI_API_KEY está configurada.")
-    openai_client = None
 from flask import Flask, render_template, request, jsonify
-from transformers import pipeline
 import PyPDF2
 from io import BytesIO
-
-# Importar o cliente da OpenAI
 from openai import OpenAI
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+# Carrega as variáveis de ambiente do .env para a execução local
+# Na Vercel, as variáveis de ambiente são configuradas diretamente no painel
+load_dotenv()
+
+app = Flask(__name__,
+            template_folder=os.path.join(os.getcwd(), 'templates'),
+            static_folder=os.path.join(os.getcwd(), 'static')) # Certifique-se que o Flask encontre as pastas
 
 # --- Configuração da Chave da OpenAI ---
-# É FUNDAMENTAL que você configure sua chave de API da OpenAI como uma variável de ambiente.
-# Exemplo (no terminal antes de rodar o app):
-# export OPENAI_API_KEY="sua_chave_aqui" (Linux/macOS)
-# $env:OPENAI_API_KEY="sua_chave_aqui" (PowerShell)
-# set OPENAI_API_KEY=sua_chave_aqui (CMD)
-# Ou use um arquivo .env com a biblioteca python-dotenv (recomendado para desenvolvimento local)
-
 try:
     openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    if not openai_client.api_key:
+        raise ValueError("OPENAI_API_KEY não configurada. Configure no Vercel Dashboard ou .env localmente.")
 except Exception as e:
     print(f"Erro ao inicializar cliente OpenAI: {e}. Certifique-se de que OPENAI_API_KEY está configurada.")
     openai_client = None
-    # Define como None se a chave não for encontrada
 
-# --- Configuração do Modelo de Classificação ---
-# Função de pré-processamento (simplificada para o exemplo)
+# --- Funções do seu app.py ---
 def preprocess_text(text):
-    return text.lower() # Apenas para o exemplo, sem pré-processamento real avançado
+    return text.lower()
 
-# Função de classificação (simulada)
 def classify_email_simulated(text):
     productive_keywords = ["solicitação", "dúvida", "suporte", "atualização", "urgente", "problema", "bug"]
     for keyword in productive_keywords:
@@ -48,13 +34,11 @@ def classify_email_simulated(text):
             return "Produtivo"
     return "Improdutivo"
 
-# Função para gerar resposta usando OpenAI
 def generate_openai_response(category, email_content):
     if openai_client is None:
         return "Erro: Chave da OpenAI não configurada. Não foi possível gerar a resposta."
 
     if category == "Produtivo":
-        # Prompt para email produtivo: solicitação, suporte, etc.
         prompt_text = f"""
         Você é um assistente de e-mail prestativo. Baseado no seguinte e-mail classificado como 'Produtivo',
         gere uma resposta formal, educada e concisa que confirme o recebimento, agradeça o contato e
@@ -67,9 +51,8 @@ def generate_openai_response(category, email_content):
 
         Resposta:
         """
-        max_tokens = 150 # Mais tokens para respostas mais elaboradas
+        max_tokens = 150
     elif category == "Improdutivo":
-        # Prompt para email improdutivo: agradecimentos, felicitações, etc.
         prompt_text = f"""
         Você é um assistente de e-mail prestativo. Baseado no seguinte e-mail classificado como 'Improdutivo',
         gere uma resposta curta, cordial e informal que seja um simples agradecimento ou reconhecimento.
@@ -81,25 +64,25 @@ def generate_openai_response(category, email_content):
 
         Resposta:
         """
-        max_tokens = 80 # Menos tokens para respostas curtas
+        max_tokens = 80
     else:
         return "Não foi possível gerar uma resposta para esta categoria."
 
     try:
         response = openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Ou "gpt-4" para resultados ainda melhores
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Você é um assistente de e-mail profissional e prestativo."},
                 {"role": "user", "content": prompt_text}
             ],
             max_tokens=max_tokens,
-            temperature=0.7, # Controla a criatividade (0.0 a 1.0)
+            temperature=0.7,
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"Erro ao comunicar com a OpenAI: {e}"
 
-# --- Rotas da Aplicação ---
+# --- Rotas da Aplicação Flask ---
 
 @app.route('/')
 def index():
@@ -130,13 +113,8 @@ def process_email():
     if not email_content.strip():
         return jsonify({"error": "O conteúdo do email está vazio."}), 400
 
-    # Pré-processamento
     preprocessed_text = preprocess_text(email_content)
-
-    # Classificação (mantendo a simulação ou integrando um modelo HF para classificação)
     class_label = classify_email_simulated(preprocessed_text)
-
-    # Geração de resposta utilizando OpenAI
     suggested_response = generate_openai_response(class_label, email_content)
 
     return jsonify({
@@ -144,5 +122,12 @@ def process_email():
         "suggested_response": suggested_response
     })
 
+# --- Importante para a Vercel ---
+# A Vercel espera uma variável `app` ou `application` para WSGI/ASGI
+# O Gunicorn (que a Vercel usa internamente) vai procurar por esta variável.
+# Certifique-se de que esta linha está no final do seu api/index.py
+from werkzeug.serving import run_simple
 if __name__ == '__main__':
+    # Para testes locais diretamente via python api/index.py
+    # A Vercel não usará este bloco
     app.run(debug=True)

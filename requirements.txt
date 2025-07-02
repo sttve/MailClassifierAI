@@ -1,5 +1,6 @@
 Flask
-transformers
-Pillow  # Necessário para PyPDF2 em algumas instalações (dependência indireta)
+Pillow
 PyPDF2
 openai
+gunicorn # Necessário para a Vercel rodar o Flask
+python-dotenv # Útil para desenvolvimento local, Vercel ignora para variáveis de ambiente
