@@ -1,0 +1,57 @@
+        body {
+            background-color: #f8f9fa; /* Light background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: #007bff; /* Primary color */
+        }
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+        .container {
+            flex: 1;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        .card {
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        textarea {
+            min-height: 200px; /* Aumenta a altura da caixa de texto */
+        }
+        .results-section {
+            display: none; /* Escondido inicialmente */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .spinner-border {
+            display: none; /* Escondido inicialmente */
+            margin: 20px auto;
+            color: #007bff;
+        }
+        .alert-danger {
+            display: none; /* Escondido inicialmente */
+            margin-top: 15px;
+        }
+        footer {
+            background-color: #343a40; /* Dark background for footer */
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto; /* Push footer to bottom */
+        }
