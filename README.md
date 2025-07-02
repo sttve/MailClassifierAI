@@ -1,11 +1,3 @@
------
-
-Que ótima notícia\! Fico feliz em saber que o erro foi corrigido e que o sistema de login e registro está funcionando como esperado na Vercel (mesmo que com o banco de dados em memória temporário). É um passo significativo\!
-
-Agora, vamos criar um novo `README.md` que inclua as informações do usuário `admin` e senha `admin123` para facilitar os testes, mantendo o estilo formal e moderno que definimos.
-
------
-
 ## 🚀 Classificador de E-mails Inteligente: Otimização e Automação de Processos 📧
 
 Seja bem-vindo(a) ao repositório do meu projeto de Classificador de E-mails Inteligente. Este projeto, desenvolvido com **Python & Flask** no backend e um frontend estruturado em **HTML, CSS e JavaScript** com o framework **Bootstrap**, tem como objetivo principal explorar a aplicação de **Inteligência Artificial (IA)** para aprimorar a gestão de e-mails corporativos, focando na eficiência e na automatização de tarefas.
