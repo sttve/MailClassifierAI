@@ -1,8 +1,14 @@
 -----
 
+Que ótima notícia\! Fico feliz em saber que o erro foi corrigido e que o sistema de login e registro está funcionando como esperado na Vercel (mesmo que com o banco de dados em memória temporário). É um passo significativo\!
+
+Agora, vamos criar um novo `README.md` que inclua as informações do usuário `admin` e senha `admin123` para facilitar os testes, mantendo o estilo formal e moderno que definimos.
+
+-----
+
 ## 🚀 Classificador de E-mails Inteligente: Otimização e Automação de Processos 📧
 
-Seja bem-vindo(a) ao repositório do meu projeto de Classificador de E-mails Inteligente. Este projeto, desenvolvido com **Flask** no backend e um frontend estruturado em **HTML, CSS e JavaScript** com o framework **Bootstrap**, tem como objetivo principal explorar a aplicação de **Inteligência Artificial (IA)** para aprimorar a gestão de e-mails corporativos, focando na eficiência e na automatização de tarefas.
+Seja bem-vindo(a) ao repositório do meu projeto de Classificador de E-mails Inteligente. Este projeto, desenvolvido com **Python & Flask** no backend e um frontend estruturado em **HTML, CSS e JavaScript** com o framework **Bootstrap**, tem como objetivo principal explorar a aplicação de **Inteligência Artificial (IA)** para aprimorar a gestão de e-mails corporativos, focando na eficiência e na automatização de tarefas.
 
 -----
 
@@ -60,15 +66,21 @@ Para configurar e executar o projeto em seu ambiente local, siga as instruções
     *Para gerar uma `FLASK_SECRET_KEY` segura, execute o seguinte comando no terminal: `python -c "import os; print(os.urandom(24).hex())"`.*
 
 5.  **Inicialização do Banco de Dados:**
-    O banco de dados SQLite (`site.db`) será criado automaticamente na raiz do projeto na primeira execução do script `api/index.py`.
+    O banco de dados SQLite em memória (`sqlite:///:memory:`) será criado automaticamente na inicialização da aplicação, conforme configurado em `api/index.py`. Note que, como este é um banco de dados em memória, **os dados (incluindo usuários registrados) não serão persistidos** entre reinícios do servidor ou entre diferentes invocações da função serverless na Vercel.
 
-6.  **Executar a Aplicação:**
+6.  **Credenciais para Teste:**
+    Para facilitar os testes imediatos após a inicialização da aplicação, um usuário `admin` com a senha `admin123` é automaticamente criado no banco de dados em memória. Você pode usar essas credenciais para fazer login na aplicação:
+
+      * **Usuário:** `admin`
+      * **Senha:** `admin123`
+
+7.  **Executar a Aplicação:**
 
     ```bash
     python api/index.py
     ```
 
-    A aplicação estará acessível via `http://127.0.0.1:8080/`. A página de login será o ponto de entrada inicial, permitindo o registro de novos usuários ou o acesso com credenciais existentes.
+    A aplicação estará acessível via `http://127.0.0.1:5000/`. A página de login será o ponto de entrada inicial.
 
 -----
 
@@ -88,7 +100,7 @@ O projeto foi configurado para um processo de deploy simplificado na Vercel, oti
 Este projeto encontra-se em um ciclo contínuo de aprimoramento. As próximas fases de desenvolvimento incluirão:
 
   * **Refinamento de Prompts da IA:** Aprimoramento das instruções fornecidas à API da OpenAI para obter classificações e respostas ainda mais precisas e contextualmente relevantes. O objetivo é otimizar a qualidade das interações com o modelo.
-  * **Histórico de Análises Persistente por Usuário:** A implementação de um histórico de análises vinculado ao usuário no banco de dados permitirá que cada usuário tenha acesso individualizado e persistente aos seus registros, independentemente do dispositivo de acesso.
+  * **Histórico de Análises Persistente por Usuário:** A implementação de um histórico de análises vinculado ao usuário no banco de dados permitirá que cada usuário tenha acesso individualizado e persistente aos seus registros, independentemente do dispositivo de acesso. Para isso, será necessária a integração com um banco de dados externo e persistente (ex: PostgreSQL).
 
 Estou aberto(a) a explorar sugestões e colaborações. Sinta-se à vontade para analisar o código, registrar `issues` para quaisquer observações ou bugs, ou submeter `pull requests` com propostas de melhoria. Sua contribuição é valorizada.
 
