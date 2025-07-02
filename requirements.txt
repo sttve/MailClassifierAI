@@ -4,6 +4,8 @@ PyPDF2
 openai
 gunicorn # Necessário para a Vercel rodar o Flask
 python-dotenv # Útil para desenvolvimento local, Vercel ignora para variáveis de ambiente
-pytest
-pytest-mock # Útil para testes e cobertura de Performance
-## Testes Unitários, Testes de Integração & Cobertura de Testes
+pytest # Útil para testes e cobertura de Performance
+pytest-mock ## Testes Unitários, Testes de Integração & Cobertura de Testes
+Flask-Login
+Flask-SQLAlchemy
+Werkzeug

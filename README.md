@@ -1,61 +1,39 @@
-# 📧 Classificador de E-mails com IA e Sugestão de Respostas
+-----
 
-Este projeto é uma aplicação web simples desenvolvida em **Python (Flask)** que utiliza **Inteligência Artificial** para classificar e-mails em categorias "Produtivo" ou "Improdutivo" e, em seguida, sugerir respostas automáticas personalizadas. A inteligência de geração de respostas é **powered by OpenAI GPT-3.5 Turbo**.
+## 🚀 Classificador de E-mails Inteligente: Otimização e Automação de Processos 📧
+
+Seja bem-vindo(a) ao repositório do meu projeto de Classificador de E-mails Inteligente. Este projeto, desenvolvido com **Flask** no backend e um frontend estruturado em **HTML, CSS e JavaScript** com o framework **Bootstrap**, tem como objetivo principal explorar a aplicação de **Inteligência Artificial (IA)** para aprimorar a gestão de e-mails corporativos, focando na eficiência e na automatização de tarefas.
 
 -----
 
-## ✨ **Funcionalidades**
+### ✨ Visão Geral e Funcionalidades Principais
 
-  * **Interface Web Intuitiva:** Um formulário HTML permite o upload de arquivos `.txt` ou `.pdf` ou a inserção direta do conteúdo do e-mail.
-  * **Classificação de E-mails:** Categoriza e-mails em:
-      * **Produtivo:** E-mails que exigem ação ou resposta (ex: solicitações, dúvidas, suporte técnico).
-      * **Improdutivo:** E-mails que não demandam ação imediata (ex: agradecimentos, felicitações).
-  * **Geração de Respostas Automáticas Inteligentes:** Utiliza a **API da OpenAI (GPT-3.5 Turbo)** para gerar sugestões de respostas contextuais, fluentes e adequadas à categoria identificada do e-mail, otimizando seu tempo de resposta.
-  * **Processamento de Arquivos:** Capacidade de extrair texto de arquivos `.txt` e `.pdf` para análise.
-  * **Pré-processamento Básico:** Realiza um pré-processamento simples do texto para normalização antes da análise.
+O Classificador de E-mails Inteligente visa proporcionar uma ferramenta robusta para otimizar a triagem e resposta de comunicações por e-mail. Suas funcionalidades abrangem:
 
------
-
-## 🛠️ **Tecnologias Utilizadas**
-
-  * **Backend:**
-      * **Python:** Linguagem de programação principal.
-      * **Flask:** Microframework web para Python.
-      * **OpenAI API:** Principal motor para a **geração de respostas automáticas (GPT-3.5 Turbo)**.
-      * **PyPDF2:** Para extração de texto de arquivos PDF.
-      * **Gunicorn:** Servidor WSGI utilizado para servir a aplicação Flask em ambiente de produção (Vercel).
-      * **python-dotenv:** Para carregamento de variáveis de ambiente em desenvolvimento local.
-  * **Frontend:**
-      * **HTML:** Estrutura da interface.
-      * **CSS:** Estilização básica para uma boa experiência visual.
-      * **JavaScript (Fetch API):** Para comunicação assíncrona com o backend e exibição dinâmica dos resultados.
-  * **Deploy:**
-      * **Vercel:** Plataforma de deploy que hospeda a aplicação como uma *Serverless Function*.
+  * **⚡️ Classificação Inteligente:** O sistema classifica e-mails como **"Produtivo"** (requerendo ação ou atenção imediata) ou **"Improdutivo"** (informativos ou de baixa prioridade). Esta categorização permite uma gestão mais eficiente do tempo e dos recursos.
+  * **🤖 Geração de Respostas via IA:** Integrado à **API da OpenAI**, o projeto oferece sugestões de respostas automáticas, concisas e contextualmente apropriadas, acelerando o fluxo de comunicação.
+  * **📂 Suporte a Diversos Formatos de Entrada:** É possível processar o conteúdo de e-mails diretamente via inserção de texto ou através do upload de arquivos **`.txt`** e **`.pdf`**, garantindo flexibilidade na entrada de dados.
+  * **⏳ Histórico de Análises:** Para referência e rastreabilidade, a aplicação mantém um histórico das últimas 10 análises realizadas. Este registro é persistido localmente no navegador (`LocalStorage`), permitindo a revisão detalhada, a recarga de dados em campos específicos e a gestão de entradas individuais.
+  * **🔒 Sistema de Autenticação de Usuários:** Para garantir a segurança e a personalização da experiência, o projeto incorpora um sistema completo de **autenticação e registro de usuários**, utilizando **Flask-Login** e **Flask-SQLAlchemy**. O acesso às funcionalidades principais da aplicação agora requer credenciais válidas, e as senhas são armazenadas de forma segura através de hashing.
+  * **💅 Interface de Usuário Otimizada:** O frontend foi redesenhado com **Bootstrap 5** para oferecer uma experiência responsiva, intuitiva e esteticamente agradável. Inclui indicadores visuais de carregamento e mensagens de erro claras para uma interação fluida.
+  * **☁️ Otimização para Deploy em Nuvem:** A arquitetura do projeto foi configurada para facilitar o deploy e a escalabilidade em plataformas como a **Vercel**, operando como uma Serverless Function.
 
 -----
 
-## 🚀 **Como Rodar o Projeto Localmente**
+### 🛠️ Guia de Configuração e Execução Local
 
-Siga os passos abaixo para configurar e executar a aplicação em sua máquina.
+Para configurar e executar o projeto em seu ambiente local, siga as instruções abaixo:
 
-### **Pré-requisitos**
-
-  * **Python 3.8+** (Recomenda-se Python 3.10 para compatibilidade com Vercel)
-  * **Git**
-  * **Chave de API da OpenAI:** Essencial para a funcionalidade de geração de respostas. Obtenha uma em [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys).
-
-### **Passos para Configuração**
-
-1.  **Clone o repositório:**
+1.  **Clonar o Repositório:**
 
     ```bash
-    git clone https://github.com/SEU_USUARIO_GITHUB/SEU_REPOSITORIO.git
-    cd SEU_REPOSITORIO
+    git clone https://github.com/seu-usuario/seu-repositorio.git
+    cd seu-repositorio
     ```
 
-    (Substitua `SEU_USUARIO_GITHUB` e `SEU_REPOSITORIO` pelos seus dados reais do GitHub).
+    *(Por favor, substitua `https://github.com/seu-usuario/seu-repositorio.git` e `seu-repositorio` pelos dados reais do seu repositório Git.)*
 
-2.  **Crie e ative um ambiente virtual (altamente recomendado):**
+2.  **Configurar Ambiente Virtual:**
 
     ```bash
     python -m venv venv
@@ -65,146 +43,53 @@ Siga os passos abaixo para configurar e executar a aplicação em sua máquina.
     source venv/bin/activate
     ```
 
-3.  **Instale as dependências:**
+3.  **Instalar Dependências:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Configure sua chave de API da OpenAI:**
-
-    Crie um arquivo chamado `.env` na **raiz do projeto** (na mesma pasta de `vercel.json`) com o seguinte conteúdo:
+4.  **Configurar Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do projeto (no mesmo diretório das pastas `api` e `templates`) e insira as seguintes chaves e seus respectivos valores:
 
     ```
-    OPENAI_API_KEY="sua_chave_secreta_da_openai_aqui"
+    OPENAI_API_KEY='sua_chave_secreta_da_openai_aqui'
+    FLASK_SECRET_KEY='uma_chave_secreta_aleatoria_e_longa_para_flask'
     ```
 
-    **Importante:** Substitua `"sua_chave_secreta_da_openai_aqui"` pela sua chave real da OpenAI. **Garanta que o arquivo `.env` esteja listado no seu `.gitignore` para evitar que sua chave seja enviada para o repositório público\!**
+    *Para gerar uma `FLASK_SECRET_KEY` segura, execute o seguinte comando no terminal: `python -c "import os; print(os.urandom(24).hex())"`.*
 
-5.  **Execute a aplicação Flask:**
+5.  **Inicialização do Banco de Dados:**
+    O banco de dados SQLite (`site.db`) será criado automaticamente na raiz do projeto na primeira execução do script `api/index.py`.
+
+6.  **Executar a Aplicação:**
 
     ```bash
     python api/index.py
     ```
 
-6.  **Acesse a aplicação:**
-    Abra seu navegador e acesse: `http://127.0.0.1:5000/`
+    A aplicação estará acessível via `http://127.0.0.1:8080/`. A página de login será o ponto de entrada inicial, permitindo o registro de novos usuários ou o acesso com credenciais existentes.
 
 -----
 
-## ☁️ **Deploy na Vercel**
+### 🚀 Deploy na Vercel
 
-Esta aplicação está configurada para ser facilmente implantada na Vercel como uma *Serverless Function*.
+O projeto foi configurado para um processo de deploy simplificado na Vercel, otimizado para a arquitetura de Serverless Functions:
 
-### **Estrutura de Pastas para Deploy**
-
-Para que a Vercel detecte e faça o deploy corretamente, o código Flask principal foi movido para `api/index.py`, e os arquivos de template e estáticos são referenciados de lá. A estrutura esperada é:
-
-```
-seu_projeto/
-├── api/
-│   └── index.py  # Ponto de entrada da aplicação Flask na Vercel
-├── templates/
-│   └── index.html
-├── static/
-│   └── style.css
-├── requirements.txt
-├── vercel.json     # Configurações de build e rotas da Vercel
-└── .gitignore
-```
-
-### **Passos para o Deploy na Vercel**
-
-1.  **Crie uma Conta Vercel:** Se ainda não tiver, registre-se em [vercel.com](https://vercel.com/).
-
-2.  **Conecte seu Repositório Git:** No painel da Vercel, importe seu repositório GitHub.
-
-3.  **Configure as Variáveis de Ambiente:** Durante a configuração do projeto na Vercel, vá em "Environment Variables" e adicione:
-
-      * **Name:** `OPENAI_API_KEY`
-      * **Value:** `SUA_CHAVE_SECRETA_DA_OPENAI_AQUI`
-      * Esta etapa é **CRÍTICA** para que a funcionalidade da OpenAI funcione em produção, pois a Vercel não lê o arquivo `.env`.
-
-4.  **Configure as Regras de Build e Rotas:** O arquivo `vercel.json` na raiz do seu projeto já contém as configurações necessárias para a Vercel construir o projeto Python, servir os arquivos estáticos e rotear as requisições para a *serverless function* Flask.
-
-    ```json
-    {
-      "version": 2,
-      "builds": [
-        {
-          "src": "api/index.py",
-          "use": "@vercel/python",
-          "config": {
-            "maxLambdaSize": "15mb",
-            "runtime": "python3.10"
-          }
-        },
-        {
-          "src": "index.html",
-          "use": "@vercel/static"
-        },
-        {
-          "src": "static/**",
-          "use": "@vercel/static"
-        }
-      ],
-      "routes": [
-        {
-          "src": "/static/(.*)",
-          "dest": "/static/$1"
-        },
-        {
-          "src": "/(.*)",
-          "dest": "/api/index.py"
-        }
-      ],
-      "installCommand": "pip install -r requirements.txt"
-    }
-    ```
-
-5.  **Inicie o Deploy:** Após configurar as variáveis de ambiente, clique em "Deploy". A Vercel fará o restante, e você receberá uma URL para sua aplicação online quando o processo for concluído.
+1.  **Conectar Repositório:** No painel da Vercel, importe este repositório Git.
+2.  **Configurações de Build:** Assegure-se de que o **Build Command** esteja vazio (ou `pip install -r requirements.txt`) e que o **Output Directory** seja definido como `api`.
+3.  **Variáveis de Ambiente:** Adicione `OPENAI_API_KEY` e `FLASK_SECRET_KEY` como **Environment Variables** secretas nas configurações do projeto na Vercel.
+4.  **Processo de Deploy:** A Vercel detectará automaticamente as configurações do `vercel.json` e iniciará o processo de deploy a cada push para a branch principal do repositório.
 
 -----
 
-## 💡 **Como Funciona a Classificação e Resposta Detalhadamente**
+### 💡 Próximos Passos e Melhorias Contempladas
 
-  * **Classificação (Simulada):** Atualmente, a categorização entre "Produtivo" e "Improdutivo" é baseada na detecção de palavras-chave predefinidas no conteúdo do e-mail (ex: "solicitação", "dúvida", "suporte" indicam um e-mail "Produtivo"). Embora eficaz para demonstração, esta abordagem pode ser expandida com um modelo de NLP treinado para maior precisão em cenários reais.
-  * **Geração de Resposta (OpenAI - GPT-3.5 Turbo):**
-    1.  O conteúdo do e-mail e sua categoria (Produtivo/Improdutivo) são enviados como parte de um **prompt** estruturado para a API da OpenAI.
-    2.  Modelos como o `gpt-3.5-turbo` analisam o prompt e o contexto do e-mail.
-    3.  Com base em instruções claras no prompt (ex: "seja formal e conciso para emails produtivos", "seja curto e cordial para improdutivos"), a OpenAI gera uma sugestão de resposta que é então exibida na interface web.
-    4.  A API é configurada para otimizar o comprimento e o tom da resposta, fornecendo um ponto de partida útil para o usuário.
+Este projeto encontra-se em um ciclo contínuo de aprimoramento. As próximas fases de desenvolvimento incluirão:
 
------
+  * **Refinamento de Prompts da IA:** Aprimoramento das instruções fornecidas à API da OpenAI para obter classificações e respostas ainda mais precisas e contextualmente relevantes. O objetivo é otimizar a qualidade das interações com o modelo.
+  * **Histórico de Análises Persistente por Usuário:** A implementação de um histórico de análises vinculado ao usuário no banco de dados permitirá que cada usuário tenha acesso individualizado e persistente aos seus registros, independentemente do dispositivo de acesso.
 
-## ⏭️ **Próximos Passos e Melhorias Potenciais**
-
-  * **Classificação Aprimorada:** Treinar um modelo de classificação de texto (ex: com Hugging Face Transformers) utilizando um dataset real de e-mails rotulados para alcançar maior precisão e robustez na categorização.
-  * **Pré-processamento Avançado:** Integrar bibliotecas de NLP como `NLTK` ou `SpaCy` para um pré-processamento mais sofisticado do texto (remoção de *stopwords*, lematização/stemming, reconhecimento de entidades nomeadas), o que pode melhorar a performance dos modelos de IA.
-  * **Interface do Usuário (UX):**
-      * Adicionar funcionalidade de arrastar e soltar arquivos para um upload mais fluido.
-      * Melhorar o feedback visual ao usuário durante o processamento (ex: barra de progresso mais detalhada).
-      * Implementar um histórico de e-mails processados e suas respectivas respostas.
-  * **Personalização:** Permitir que o usuário defina ou ajuste palavras-chave e regras de classificação, ou personalize os prompts de resposta para a OpenAI.
-  * **Integração com Contas de E-mail:** Desenvolver funcionalidades para que a aplicação possa ler e-mails diretamente de uma caixa de entrada (ex: Gmail, Outlook) após a devida autenticação e autorização.
-  * **Autenticação e Segurança:** Para um ambiente de produção mais robusto, adicionar um sistema de autenticação de usuário e implementar medidas de segurança adicionais para a API e os dados.
-
------
-
-## 🤝 **Contribuição**
-
-Sinta-se à vontade para contribuir com este projeto\!
-
-1.  Faça um *fork* do repositório.
-2.  Crie uma *branch* para sua funcionalidade (`git checkout -b minha-nova-funcionalidade`).
-3.  Faça suas alterações e *commit* (`git commit -m 'Adiciona nova funcionalidade X'`).
-4.  Envie para sua *branch* (`git push origin minha-nova-funcionalidade`).
-5.  Abra um *Pull Request* detalhando suas mudanças.
-
------
-
-## 📄 **Licença**
-
-Este projeto está sob a licença [MIT License](https://www.google.com/search?q=LICENSE).
+Estou aberto(a) a explorar sugestões e colaborações. Sinta-se à vontade para analisar o código, registrar `issues` para quaisquer observações ou bugs, ou submeter `pull requests` com propostas de melhoria. Sua contribuição é valorizada.
 
 -----

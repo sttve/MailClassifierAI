@@ -12,13 +12,51 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container p-5">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-robot me-2"></i> Classificador de E-mails com IA
-            </a>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-robot me-2"></i> Classificador de E-mails com IA
+        </a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item me-3">
+                        <span class="nav-link text-white-50">Olá, {{ current_user.username }}!</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sair</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-light" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light" href="{{ url_for('register') }}">Registrar</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        </nav>
+
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    </body>
 
     <div class="container mt-4">
         <div class="card p-4">
